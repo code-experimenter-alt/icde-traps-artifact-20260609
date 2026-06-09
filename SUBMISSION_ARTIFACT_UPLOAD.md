@@ -27,7 +27,7 @@ TRAPS: One-Sided Learned Admission Indexing for Flood-Resilient Password Verific
 Short description:
 
 ```text
-Reproducibility package for the ICDE submission. The artifact contains the LaTeX source, generated result CSVs, experiment scripts, ICDE-facing figures, artifact guide, package manifest, and executable audit for the seeded production frontier, shift grid, dynamic drift guard, ablation, LANL status-outcome replay, LANL invalid-heavy stress replay, and queueing experiments.
+Reproducibility package for the ICDE submission. The artifact contains the LaTeX source, generated result CSVs, experiment scripts, ICDE-facing figures, artifact guide, package manifest, and executable audit for the seeded controlled frontier, shift grid, dynamic drift guard, ablation, LANL status-outcome replay, LANL invalid-heavy stress replay, and queueing experiments.
 ```
 
 Suggested tags:

@@ -8,7 +8,7 @@ Our evaluation addresses five questions: at fixed memory, how many invalid expen
 \begin{table}[t]
   \centering
   \footnotesize
-  \caption{Backend verifier latency.}
+  \caption{Backend verifier latency and parameters.}
   \label{tab:backend-benchmark}
   \begin{tabularx}{\columnwidth}{lXX}
     \toprule
@@ -16,7 +16,7 @@ Our evaluation addresses five questions: at fixed memory, how many invalid expen
     \midrule
     Parameters
       & \(t=3\), \(m=65536\) KiB, \(p=1\)
-      & iter.\(=600000\), hash\(=\texttt{SHA-256}\), dkLen\(=32\) B \\
+      & iter.\(=600000\), hash\(=\texttt{SHA-256}\), dkLen\(=32\) bytes \\
     Verifier calls
       & 78,620
       & 78,620 \\
@@ -85,9 +85,9 @@ Type & Item & Description \\
 \multicolumn{3}{@{}l}{\textit{Baselines}} \\
 Ext. & Backend only & No pre-screening; forwards all requests. \\
 Ext. & Rate limit & Progressive throttling or lockout after failures~\cite{nist_sp800_63b_4_2025,owasp_authentication_cheat_sheet}. \\
-Ext. & Blocklist & Registration-time or policy-side weak-password denylist screening~\cite{nist_sp800_63b_2017,nist_sp800_63b_4_2025,owasp_authentication_cheat_sheet}. \\
+Ext. & Blocklist & Registration-time or policy-side weak-password denylist screening~\cite{nist_sp800_63b_4_2025,owasp_authentication_cheat_sheet}. \\
 Ext. & Global Bloom & Single global Bloom filter over the same PRF trapdoors and total memory budget as TRAPS~\cite{Bloom1970BloomFilter,broder2004network}. \\
-Diag. & Peppered tag & Exact keyed fast-verifier tag with uniform or adaptive tag lengths. \\
+Diag. & Peppered tag & Truncated keyed fast-verifier tag with uniform or adaptive tag lengths. \\
 Diag. & Hash partition & Non-learned partitioned Bloom filter using hash/account partitions under the same total memory. \\
 Diag. & Risk partition & Handcrafted-risk partition using known-password markers without a learned router. \\
 Diag. & Neg. cache & Exact account-local cache of backend-confirmed invalid tuples. \\
@@ -113,10 +113,10 @@ Aux. & Capture rate & Invalid requests blocked; complement of invalid forwarding
 \end{table}
 
 \paragraph{Configurations}
-Experiments run on 64-bit Microsoft Windows~11 Pro 24H2 with a 13th Gen Intel Core i9-13900KF CPU and 16\,GB RAM. The Python~3.12 prototype uses optimized OpenSSL and Argon2 library backends, and all baselines and TRAPS variants share the same Argon2 and PBKDF2 parameters. Timing microbenchmarks use the Windows high-performance power plan and synchronous single-worker execution to calibrate per-attempt verifier cost, not production throughput. The reproducibility package\footnote{Anonymous artifact URL: \url{https://anonymous.4open.science/r/ICDETRAPS20260609}.} includes the workload generator, replay scripts, plotting scripts, and exported audit denominators.
+Experiments run on 64-bit Microsoft Windows~11 Pro 24H2 with a 13th Gen Intel Core i9-13900KF CPU and 16\,GB RAM. The Python~3.12 prototype uses optimized OpenSSL and Argon2 library backends, and all baselines and TRAPS variants share the same Argon2 and PBKDF2 parameters. Timing microbenchmarks use the Windows high-performance power plan and synchronous single-worker execution to calibrate per-attempt verifier cost, not deployment throughput. The reproducibility package\footnote{Anonymous artifact URL: \url{https://anonymous.4open.science/r/ICDETRAPS20260609}.} includes the workload generator, replay scripts, plotting scripts, and denominator audits.
 
 \paragraph{Measurement modes}
-We use five modes: a verifier-path benchmark for single-worker backend cost; replay evaluation over identical event streams; seeded production-baseline frontiers with denominators and confidence intervals; distribution-shift grids over target skew, risk drift, replay, and occupancy pressure; and method-specific bounded-worker queueing using the measured Argon2 service time.
+We use five modes: a verifier-path benchmark for single-worker backend cost; replay evaluation over identical event streams; seeded controlled-baseline frontiers with denominators and confidence intervals; distribution-shift grids over target skew, risk drift, replay, and occupancy pressure; and method-specific bounded-worker queueing using the measured Argon2 service time.
 
 \paragraph{Prototype and evaluation pipeline}
 All methods share the same \texttt{verify\_password} interface and backend registry format; TRAPS changes only which attempts are forwarded. Each forwarded attempt therefore incurs the same backend path, including registry lookup, stored-hash parsing, salt and parameter recovery, password hashing, and constant-time comparison. Passwords are drawn from the \texttt{current\_password} field of \texttt{accounts.csv}, preserving the password-length distribution, and verification reads the complete stored hash from \texttt{backend\_registry.csv}. We calibrate forwarded-attempt cost with 78{,}620 single-worker verifier calls per backend configuration; the benchmark excludes network I/O, client load generation, queueing, frontend screening, and inter-request concurrency.
@@ -144,7 +144,7 @@ TRAPS partitions the calibrated route-score space into a fixed number of regions
 The default end-to-end figures use a single frozen epoch whose region capacities are selected from training and validation statistics. This isolates the effect of routing, partitioning, and allocation from feedback-loop effects. The shift-grid suite then evaluates dynamic-capacity control separately: previous-window region observations produce next-epoch capacity targets through rebuild or dual-query migration, without using future labels.
 
 \paragraph{Workload construction}
-The controlled generator is seeded by a cleaned public password lexicon derived from the RockYou wordlist.\footnote{Kali Linux packages the \texttt{wordlists} package, which contains \texttt{rockyou.txt}.} The lexicon supplies password-rank and weak-password distributions while the artifact stores only synthetic account records, PRF-based trapdoors, and generated verifier state. We deduplicate the lexicon and assign each candidate password a synthetic popularity score using a Zipf-like prior with adjustments for common weak-password patterns. From this prior, we instantiate 10{,}000 active accounts, sample current passwords by coarse strength segment, derive related old passwords through lightweight edits, and assign static account metadata from fixed distributions.
+The controlled generator is seeded by a cleaned public password lexicon derived from the RockYou wordlist distributed with the Kali Linux \texttt{wordlists} package.\footnote{\url{https://www.kali.org/tools/wordlists/}} The lexicon supplies password-rank and weak-password distributions while the artifact stores only synthetic account records, PRF-based trapdoors, and generated verifier state. We deduplicate the lexicon and assign each candidate password a synthetic popularity score using a Zipf-like prior with adjustments for common weak-password patterns. From this prior, we instantiate 10{,}000 active accounts, sample current passwords by coarse strength segment, derive related old passwords through lightweight edits, and assign static account metadata from fixed distributions.
 
 The generator then produces benign and adversarial authentication attempts over the same account universe. The benign stream includes valid logins and benign mistypes or password-reuse behavior, while the adversarial stream includes invalid credential attempts such as weak-password guessing, user/password spraying, reuse of old related passwords, and attempts against nonexistent or unrepresented accounts. These ingredients yield controlled, reproducible stress tests for the admission-index mechanisms. The benign and attack workload models are summarized in \autoref{tab:workload-model}.
 
@@ -154,24 +154,24 @@ We evaluate a disclosed workload matrix over target skew, replay fraction, risk 
 \paragraph{Baselines and metrics}
 Table~\ref{tab:baseline_metric_compact} summarizes the baselines and metrics. Our main cryptographic pre-screening baseline is a single global Bloom filter over represented account--password trapdoors, denoted \emph{Global Bloom}. It uses the same represented credential set and the same total memory budget as TRAPS, but it does not use learned routing, score regions, or region-wise memory allocation. Improvements over this baseline isolate the value of routing, partitioning, and allocation rather than the value of using a Bloom pre-screener at all.
 
-Section~\ref{sec:blocks} discusses exact keyed fingerprints as a compatible fast-verification substrate. The frontier includes uniform peppered tags, adaptive account-risk tags, exact negative caches, and rate-limit-plus-tag hybrids. These rows define the exact-fingerprint operating point; the AMQ rows define the approximate-membership operating point where TRAPS's allocation, cap, replay, and migration policies are exercised.
+Section~\ref{sec:blocks} discusses keyed tag fingerprints as a compatible fast-verification substrate. The frontier includes uniform peppered tags, adaptive account-risk tags, exact negative caches, and rate-limit-plus-tag hybrids. These rows define the tag-fingerprint operating point; the AMQ rows define the approximate-membership operating point where TRAPS's allocation, cap, replay, and migration policies are exercised.
 
 Let \(L\) be the set of represented valid attempts, \(I\) the set of invalid attempts, and \(F\) the number of attempts forwarded to the backend. Our primary safety metric is the valid-credential false negative rate, i.e., the fraction of represented valid attempts rejected before backend verification. Our primary load-shedding metric is the invalid forwarding rate, i.e., the fraction of invalid attempts that still reach the backend. We additionally report backend verification count, a backend-time proxy obtained by multiplying forwarded attempts by a shared verifier cost, and legitimate-request p95 latency. Frontend mean cost, memory footprint, capture rate, and backend-load reduction are reported as auxiliary metrics. Backend-load reduction is derived relative to the backend-only baseline.
 
 \begin{figure}[t]
   \centering
   \includegraphics[width=\linewidth]{figure/icde_experiments/icde_frontier_production.pdf}
-  \caption{Seeded admission-index frontier with production baselines.}
+  \caption{Seeded admission-index frontier with operating baselines. AMQ rows use Bloom-style approximate membership; tag rows use truncated keyed fingerprints; rate+tag rows may throttle valid attempts.}
   \label{fig:icde-production-frontier}
 \end{figure}
 
 \subsection{Admission-Index Microbenchmarks}
 \label{sec:exp-index-microbench}
 
-\paragraph{Seeded production-baseline frontier}
+\paragraph{Seeded controlled-baseline frontier}
 Figure~\ref{fig:icde-production-frontier} compares admission-index baselines across 30 common-random-number seeds. Each seed uses 200k represented keys, 50k valid probes, and one million invalid probes; the reported data include raw and first-seen denominators, seed-level rates, 95\% intervals, and memory breakdowns. At 16 bits per represented key, Global Bloom forwards \(4.63\times10^{-4}\) of invalid probes on average. Handcrafted risk partitioning and TRAPS learned allocation reduce AMQ forwarding to \(3.21\times10^{-4}\) and \(3.06\times10^{-4}\), respectively; adding exact replay suppression lowers TRAPS's raw invalid-forward rate to \(1.55\times10^{-4}\) while preserving the same first-seen rate. The non-deployable oracle AMQ reaches \(2.90\times10^{-4}\), showing the remaining physical-design headroom.
 
-Peppered fast tags give the exact-fingerprint frontier: observed uniform 16-bit tags forward \(1.78\times10^{-5}\), close to the \(2^{-16}\) calibration target, and adaptive account-risk tags forward \(1.09\times10^{-5}\). A production 64-bit tag bound is reported separately as a zero-event upper-bound row and is not plotted as part of the 16-bit frontier. The AMQ frontier answers a different physical-design question: given a one-sided approximate-membership frontend with residual false forwards, TRAPS allocates that residual channel across risk regions. The handcrafted risk row is a strong domain baseline with generator-aligned risk markers; the learned row tests automatic region discovery under the same capped AMQ allocation and replay machinery. Operational rate-limit-plus-tag hybrids reduce invalid forwards further but throttle valid requests, so they are reported separately from one-sided indexes.
+Peppered fast tags give the tag-fingerprint frontier: observed uniform 16-bit tags forward \(1.78\times10^{-5}\), close to the \(2^{-16}\) calibration target, and adaptive account-risk tags forward \(1.09\times10^{-5}\). A 64-bit tag bound is reported separately as a zero-event upper-bound row and is not plotted as part of the 16-bit frontier. The AMQ frontier answers a different physical-design question: given a one-sided approximate-membership frontend with residual false forwards, TRAPS allocates that residual channel across risk regions. The handcrafted risk row is a strong domain baseline with generator-aligned risk markers; the learned row tests automatic region discovery under the same capped AMQ allocation and replay machinery. Operational rate-limit-plus-tag hybrids reduce invalid forwards further but throttle valid requests, so they are reported separately from one-sided indexes.
 
 \begin{figure}[t]
   \centering
@@ -181,7 +181,7 @@ Peppered fast tags give the exact-fingerprint frontier: observed uniform 16-bit 
 \end{figure}
 
 \paragraph{Shift grid and worst cases}
-Figure~\ref{fig:icde-shift-grid} sweeps target-account skew and train/test risk drift at 12 and 16 bits/key; separate exported sensitivity varies replay fraction and occupancy injection. TRAPS improves over non-learned AMQs when high-risk misses remain aligned with validation-time regions, and the grid also identifies when a frozen allocation should be refreshed. Table~\ref{tab:shift-dynamic} gives the 16-bit worst-case accounting: the worst frozen cell reaches \(1.51\times10^{-3}\), while previous-window next-epoch allocation and drift guard bring the worst case back near Global Bloom. Large drift is therefore a measured rebuild/fallback condition in the control plane.
+Figure~\ref{fig:icde-shift-grid} sweeps target-account skew and train/test risk drift at 12 and 16 bits/key; additional sensitivity runs vary replay fraction and occupancy injection. TRAPS improves over non-learned AMQs when high-risk misses remain aligned with validation-time regions, and the grid also identifies when a frozen allocation should be refreshed. Table~\ref{tab:shift-dynamic} gives the 16-bit worst-case accounting: the worst frozen cell reaches \(1.51\times10^{-3}\), while previous-window next-epoch allocation and drift guard bring the worst case back near Global Bloom. Large drift is therefore a measured rebuild/fallback condition in the control plane.
 The dynamic rows are the operational policy: frozen routing is the stale-state ablation, while next-epoch capacity and drift guard use only previous-window observations.
 
 \begin{table}[t]
@@ -196,7 +196,7 @@ The dynamic rows are the operational policy: frozen routing is the stale-state a
 \begin{figure*}[t]
   \centering
   \includegraphics[width=\linewidth]{figure/icde_experiments/icde_scale_update_sweep.pdf}
-  \caption{Scale and update behavior at 16 bits per represented credential.}
+  \caption{Scale and update behavior at 16 bits per represented credential. Probe counts compare Global Bloom, TRAPS AMQs, and keyed tags under the same represented set.}
   \label{fig:icde-scale-update}
 \end{figure*}
 
@@ -206,7 +206,7 @@ Figure~\ref{fig:icde-scale-update} extends the index experiment to \(10^6\) repr
 \begin{figure*}[t]
   \centering
   \includegraphics[width=\linewidth]{figure/icde_experiments/icde_lanl_trace_suite.pdf}
-  \caption{LANL-conditioned routing/skew replay and router ablation.}
+  \caption{LANL-conditioned routing/skew replay and router ablation. Controls shuffle account, time, or risk information to test whether routing uses enterprise metadata skew.}
   \label{fig:icde-lanl-trace}
 \end{figure*}
 
@@ -214,10 +214,10 @@ Figure~\ref{fig:icde-scale-update} extends the index experiment to \(10^6\) repr
 \label{sec:exp-lanl}
 
 \paragraph{LANL trace setup}
-The public LANL authentication trace~\cite{Turcotte2018UnifiedHostNetwork} provides real enterprise arrival order, account/source skew, burstiness, routing-feature drift, and Success/Fail authentication status. The experiment samples 750{,}000 chronological events, uses the first 60\% for training, the next 20\% for validation, and the final 20\% for testing. The default full-stable token concatenates destination user, destination host, authentication type, logon type, and orientation. Source host, source user, status, and future fields are excluded from the token and router features. The exported denominator files report 8{,}702 destination users, 4{,}077 sources, top-1\% user event mass of 0.400, user-event Gini 0.753, and train/test token JS divergence 0.180.
+The public LANL authentication trace~\cite{Turcotte2018UnifiedHostNetwork} provides real enterprise arrival order, account/source skew, burstiness, routing-feature drift, and Success/Fail authentication status. The experiment samples 750{,}000 chronological events, uses the first 60\% for training, the next 20\% for validation, and the final 20\% for testing. The default full-stable token concatenates destination user, destination host, authentication type, logon type, and orientation. Source host, source user, status, and future fields are excluded from the token and router features. Denominator records report 8{,}702 destination users, 4{,}077 sources, top-1\% user event mass of 0.400, user-event Gini 0.753, and train/test token JS divergence 0.180.
 
 \paragraph{Trace-conditioned baselines}
-The LANL suite has two outcome views. First, a status-outcome replay uses the trace's real Success/Fail status as the event label. It yields 138{,}390 represented-success test events and 1{,}080 failure events; TRAPS learned routing forwards \(2.10\times10^{-7}\) of failures in expectation, versus \(4.59\times10^{-4}\) for Global Bloom and \(3.25\times10^{-4}\) for handcrafted risk partitioning, with zero represented-success false rejects. Second, an invalid-heavy stress replay uses the same LANL arrival/account/source skew with generated password-validity labels, yielding 7{,}015 represented-valid and 140{,}297 invalid test events. In that stress view, Global Bloom forwards \(4.59\times10^{-4}\), handcrafted risk partitioning \(3.98\times10^{-4}\), TRAPS learned routing \(4.32\times10^{-4}\), keyed tags \(1.53\times10^{-5}\), and adaptive tags \(1.44\times10^{-5}\). This split makes the trace result useful for both routing and substrate interpretation: the learned route extracts metadata signal in the status-outcome view, while the invalid-heavy view keeps a large denominator and shows exact tags as the fast-verifier frontier.
+The LANL suite has two outcome views. First, a status-outcome replay uses the trace's real Success/Fail status as the event label. It yields 138{,}390 represented-success test events and 1{,}080 failure events; TRAPS learned routing forwards \(2.10\times10^{-7}\) of failures in expectation, versus \(4.59\times10^{-4}\) for Global Bloom and \(3.25\times10^{-4}\) for handcrafted risk partitioning, with zero represented-success false rejects. Second, an invalid-heavy stress replay uses the same LANL arrival/account/source skew with generated password-validity labels, yielding 7{,}015 represented-valid and 140{,}297 invalid test events. In that stress view, Global Bloom forwards \(4.59\times10^{-4}\), handcrafted risk partitioning \(3.98\times10^{-4}\), TRAPS learned routing \(4.32\times10^{-4}\), keyed tags \(1.53\times10^{-5}\), and adaptive tags \(1.44\times10^{-5}\). This split makes the trace result useful for both routing and substrate interpretation: the learned route extracts metadata signal in the status-outcome view, while the invalid-heavy view keeps a large denominator and shows keyed tags as the tag-fingerprint frontier.
 
 \paragraph{Learned-router ablation and sensitivity}
 Account-shuffle, time-shuffle, and uniform-risk controls test whether routing uses enterprise metadata skew rather than future labels. Destroying risk information moves TRAPS back to the global Bloom rate. The status-outcome replay supplies real trace outcomes, while the invalid-heavy stress replay keeps the credential-flood denominator large enough to compare AMQ allocation policies.
@@ -225,7 +225,7 @@ Account-shuffle, time-shuffle, and uniform-risk controls test whether routing us
 \subsection{Named Workload Corners}
 \label{sec:exp-corners}
 
-The full grid carries the main evidence; the named KPwA/CPwA workloads provide interpretable corners. In the fixed-credential \emph{Credential-Flood Day} corner, TRAPS preserves the one-sided invariant and reduces invalid forwarding relative to the same-memory Global Bloom baseline when the learned regions match the attack skew. In the \emph{Occupancy-Injection Attack} corner, attacker-controlled insertions stress region capacity; the shift grid and ablation table expose the corresponding cap and refresh behavior across all cells.
+Aggregate grids provide the primary comparison, while the named KPwA/CPwA workloads provide interpretable corners. In the fixed-credential \emph{Credential-Flood Day} corner, TRAPS preserves the one-sided invariant and reduces invalid forwarding relative to the same-memory Global Bloom baseline when the learned regions match the attack skew. In the \emph{Occupancy-Injection Attack} corner, attacker-controlled insertions stress region capacity; the shift grid and ablation table expose the corresponding cap and refresh behavior across all cells.
 
 \subsection{Ablation Study}
 \label{sec:exp-ablation}
@@ -235,19 +235,17 @@ We next isolate learned partitioning, region-wise allocation, replay suppression
 \begin{table}[t]
   \centering
   \scriptsize
-  \caption{Mechanism ablation at 16 bits/key over 30 seeds.}
+  \caption{Mechanism ablation at 16 bits/key over 30 seeds. Raw IFFR uses all invalid attempts, first-seen IFFR removes repeated invalid tuples, and cap violations count cells above the configured regional cap.}
   \label{tab:traps-ablation}
   \input{context/generated/table_traps_ablation}
 \end{table}
 
 Table~\ref{tab:traps-ablation} separates raw invalid forwards from first-seen invalid forwards. Removing the learned router or region-wise allocation returns the AMQ close to the global Bloom rate. Removing replay suppression leaves the first-seen rate unchanged but doubles raw invalid forwards under a 50\% replay fraction, which is the expected behavior for an exact negative cache. The no-cap row can improve the median rate but creates cap violations, so it is not a safe deployment policy.
 
-The main paper focuses on the ablation rows that directly test the ICDE claim: learned routing, allocation, replay suppression, and cap enforcement.
-
 \begin{figure}[t]
   \centering
   \includegraphics[width=\linewidth]{figure/icde_experiments/icde_queueing_by_method.pdf}
-  \caption{Method-specific bounded-worker queueing with measured Argon2 service time.}
+  \caption{Method-specific bounded-worker queueing with measured Argon2 service time and an 8\% valid-attempt mix.}
   \label{fig:icde-queueing}
 \end{figure}
 
@@ -255,7 +253,7 @@ The main paper focuses on the ablation rows that directly test the ICDE claim: l
 \label{sec:exp-queueing-replay}
 
 \paragraph{Bounded-worker queueing}
-Figure~\ref{fig:icde-queueing} maps method-specific forwarding rates from the production frontier to backend-worker pressure using the 122.07 ms Argon2 mean service time and eight backend workers. With an 8\% valid-attempt fraction, all one-sided indexes keep utilization close because valid attempts dominate residual backend work; rate-limit hybrids are plotted with their measured valid-drop caveat rather than mixed into the one-sided frontier.
+Figure~\ref{fig:icde-queueing} maps method-specific forwarding rates from the controlled frontier to backend-worker pressure using the 122.07 ms Argon2 mean service time and eight backend workers. The 8\% valid-attempt mix stresses legitimate-login service time while retaining a large invalid stream. All one-sided indexes keep utilization close because valid attempts dominate residual backend work; rate-limit hybrids are plotted with their measured valid-drop caveat rather than mixed into the one-sided frontier.
 The queueing panel translates forwarding-rate deltas into worker provisioning and latency headroom under the shared backend service-time model.
 
 \begin{figure}[t]
@@ -277,4 +275,4 @@ The end-to-end figures use a frozen epoch allocation selected from training and 
 
 The empirical adversary is the partial-information attacker from our threat model: it does not observe exact region assignments, thresholds, live filter state, or local drop decisions. With per-region caps, Section~\ref{sec:correctness-bound} bounds expected backend work per distinct invalid tuple by \(\varepsilon_{\mathrm{cap}}\), complementing robust-Bloom-filter notions~\cite{Naor2015AdversarialBF,NaorOved2022BetOrPass,LotanNaor2025MonotonicityBetting,Tirmazi2025PrivacyModelBF} with backend-work accounting and exact replay retention.
 
-Production deployments integrate the admission index with concurrency control, queueing, latency padding, monitoring, abuse-response policy, and rebuild scheduling. The no-false-reject property relies on stable routing, atomic insertion, and versioned dual-query rebuilds; stale Bloom-filter bits from password changes are handled through periodic rebuilds or dynamic AMQ variants. TRAPS assumes a trusted first-party frontend, which matches the intended placement before the service's own password verifier.
+Operational deployments integrate the admission index with concurrency control, queueing, latency padding, monitoring, abuse-response policy, and rebuild scheduling. The no-false-reject property relies on stable routing, atomic insertion, and versioned dual-query rebuilds; stale Bloom-filter bits from password changes are handled through periodic rebuilds or dynamic AMQ variants. TRAPS assumes a trusted first-party frontend, which matches the intended placement before the service's own password verifier.
