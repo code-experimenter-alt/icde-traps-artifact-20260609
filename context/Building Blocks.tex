@@ -1,0 +1,129 @@
+\section{Building Blocks}
+\label{sec:blocks}
+
+This section defines the mechanisms used by TRAPS. The concrete known-password and chosen-password attack models are introduced in Section~\ref{sec:threat-model}.
+
+\paragraph{Notation}
+Let \(S\) be the active credential set and \(N:=|S|\). A credential consists of a username, password, account salt, password-version number, and stable credential metadata. We write \(H\) for the expensive backend password-verification function and \(h\) for a lightweight prehash. A \emph{member} query is a correct login attempt for an active credential. A \emph{non-member} query is an incorrect attempt relative to the active credential set.
+
+TRAPS partitions credential attempts into \(r\) regions. Let \(S_j\subseteq S\) be the set of represented valid credentials assigned to region \(j\), and let \(N_j:=|S_j|\). For sizing, \(\bar N_j\) denotes the provisioned occupancy of region \(j\).
+
+\subsection{Learning-Assisted Indexing Interface}
+
+TRAPS separates routing from membership. The learning and risk oracle maps an attempt to a region, while a region-local fast-verification substrate decides whether the attempt should be escalated to the backend.
+
+A region-local substrate exposes the interface
+\[
+\mathcal I_{e,j}.\mathsf{Query}(t)\in\{\mathsf{neg},\mathsf{pos}\},
+\]
+where \(e\) is the epoch, \(j\) is the region, and \(t\) is a credential trapdoor. A negative result is locally rejected with the generic failure response. A positive result is only an escalation decision: the backend verifier \(H\) remains responsible for accepting or rejecting the login.
+
+This interface can be implemented by AMQs, such as Bloom filters, Cuckoo filters, or quotient filters, or by exact keyed fingerprints. The security invariant is the same across substrates: represented valid credentials must not be locally dropped by the pre-screener.
+
+\subsection{Two Membership Problems}
+
+TRAPS separates two membership problems that are often conflated.
+
+\paragraph{Credential membership}
+The first problem is to test whether a submitted username--password pair is plausibly represented by the active credential set. This test must have one-sided correctness: a represented valid credential must not be locally rejected by the pre-screener.
+
+Exact keyed fingerprints solve this problem directly. For example, a service may store a truncated keyed tag
+\[
+\theta_u
+=
+\operatorname{Trunc}_b
+\left(
+\operatorname{HMAC}_{K}
+\left(
+u\parallel pw\parallel s_u\parallel v_u
+\right)
+\right)
+\]
+and compare it before invoking \(H\). This is a strong baseline for uniform account-local fast verification.
+
+A \(b\)-bit keyed tag has residual collision probability approximately \(2^{-b}\) per attempt. An optimally tuned Bloom filter with \(B\) bits per represented key has
+\[
+p_{\mathrm{BF}}(B)\approx \exp\!\left(-(\ln 2)^2B\right)=2^{-B\ln 2}.
+\]
+Thus, at the same nominal 16 bits per key, a tag targets about \(1.5\times10^{-5}\) residual forwards, while a Bloom filter targets about \(4.6\times10^{-4}\). This gap is a substrate property. TRAPS uses a regioned indexing layer to assign different residual forwarding budgets to different risk populations. Exact keyed fingerprints give the fast-verifier operating point; AMQs give a compact, centrally partitionable operating point that naturally supports region-wise memory allocation.
+
+\paragraph{Risk membership}
+The second problem is to identify whether an attempt belongs to a risky population, such as attempts using leaked or policy-denied passwords, or registrations that resemble chosen-password occupancy manipulation. This signal may be approximate. False positives can route an attempt into a stricter region, and false negatives leave some attack traffic in a less hardened region. Such signals must not directly accept or reject an existing credential at login.
+
+TRAPS uses risk membership only for routing and hardening. Final authentication is still performed by the backend verifier, and valid-credential forwarding is protected by the credential-membership invariant.
+
+\subsection{PRF Trapdoors}
+
+Let \(\kappa\) be the security parameter, and let
+\[
+\mathsf{F}=\{f_K\}_{K\in\{0,1\}^{\kappa}}
+\]
+be an efficiently computable pseudorandom function with output domain \(\mathcal{T}\). For username \(u\), password \(pw\), salt \(s\), and epoch trapdoor key \(K_e^{\mathrm{td}}\), TRAPS derives the credential trapdoor
+\[
+t
+=
+f_{K_e^{\mathrm{td}}}
+\left(
+h(u,pw,s)
+\right)
+\in\mathcal{T}.
+\]
+The trapdoor is used only as the membership key for the fast-verification substrate. It is not exposed as a learning feature and does not determine authentication success.
+
+At enrollment, \(s=s_u\) is the account salt. At login, the frontend uses \(s=s_u\) if the username exists in the edge directory and a dummy salt \(s=\bar{s}\) otherwise. Unknown usernames therefore follow the same logical trapdoor-generation path but query trapdoors that were never inserted.
+
+\subsection{AMQ Credential Screening}
+
+In our implementation, each region is backed by one or more Bloom filters~\cite{broder2004network}. Bloom filters are the measured AMQ substrate in this paper; Cuckoo, quotient, XOR, or fused filters can instantiate the same interface but are not separately evaluated here. A Bloom filter stores a set using a bit array and public hash functions. It has one-sided error: inserted items are never missed, while non-inserted items may query positive.
+
+For a Bloom filter with \(n\) inserted items, \(m\) bits, and \(k\) hash functions, the standard false-positive approximation is
+\[
+\mathrm{FPR}_{\mathrm{BF}}(n,m,k)
+=
+\left(1-e^{-kn/m}\right)^k.
+\]
+With near-optimal hashing,
+\[
+k\approx \frac{m}{n}\ln 2.
+\]
+TRAPS provisions each region \(j\) with an effective residual forwarding probability \(\varepsilon_j\). A non-member attempt routed to region \(j\) reaches the backend with probability approximately \(\varepsilon_j\), before replay suppression is applied.
+
+\subsection{Learning and Risk Oracle}
+
+TRAPS uses learning only to partition attempts into regions. Let
+\[
+x=\phi_e(u,pw,\sigma)
+\]
+be an epoch-stable feature vector, where \(\sigma\) denotes stable account or credential metadata. The risk oracle
+\[
+\mathcal{O}_e(x)\in[0,1)
+\]
+may combine learned scores with risk-membership probes such as known-password-list membership or registration-side chosen-password markers. Thresholds
+\[
+0=\tau_0<\tau_1<\cdots<\tau_r=1
+\]
+define the routing rule
+\[
+\pi_e(u,pw,\sigma)=j
+\iff
+\tau_{j-1}\le \mathcal{O}_e(\phi_e(u,pw,\sigma))<\tau_j.
+\]
+
+The oracle differs from learned Bloom filters that predict set membership~\cite{Mitzenmacher2018NeurIPS}: it predicts a resource region, while membership remains a keyed substrate query. Model errors can place traffic in suboptimal regions and increase cost; represented valid credentials are protected by the stable-feature and epoch-migration contract in Section~\ref{sec:correctness-bound}.
+
+\subsection{Replay Suppression}
+
+Bloom-filter false positives are deterministic once the filter state and hash functions are fixed. An adaptive adversary that discovers an invalid credential forwarded by the pre-verifier could otherwise replay that same credential to repeatedly trigger backend verification.
+
+TRAPS therefore maintains an exact replay-suppression cache for invalid credentials that passed the pre-verifier but failed backend verification. For epoch \(e\), password-version number \(v_u\), username \(u\), and trapdoor \(t\), the frontend stores
+\[
+\eta
+=
+\operatorname{HMAC}_{K_e^{\mathrm{neg}}}
+\left(
+e \parallel v_u \parallel u \parallel t
+\right),
+\]
+where \(K_e^{\mathrm{neg}}\) is domain-separated from the trapdoor key. The cache is exact rather than approximate, because false positives in this cache would create false rejects. Entries expire at epoch boundaries or when the account password version changes.
+
+The replay cache stores one fixed-length token per backend-confirmed invalid tuple retained in the current epoch. If \(R_e\) such tuples are retained and each token uses \(b_{\eta}\) bits, the dominant storage cost is \(R_e b_{\eta}\) bits plus index overhead. The adaptive-work bound in Section~\ref{sec:correctness-bound} applies only over the retention window: evicting a token permits the same false-positive tuple to consume backend work again after eviction. Implementations therefore size retention from the expected false-forward discovery rate and the acceptable replay window, rather than from the number of active accounts alone.

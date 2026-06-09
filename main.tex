@@ -1,0 +1,62 @@
+\documentclass[conference]{IEEEtran}
+\pdfminorversion=7
+
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{amsthm}
+\usepackage{booktabs,tabularx}
+\usepackage{cite,url}
+\usepackage{amsmath,amssymb,amsfonts}
+%\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{comment}
+\usepackage{subcaption}
+\usepackage{siunitx}
+\usepackage{colortbl} 
+\usepackage{multirow}
+\usepackage[hidelinks]{hyperref}
+
+\setlength{\textfloatsep}{6pt plus 1pt minus 2pt}
+\setlength{\floatsep}{6pt plus 1pt minus 2pt}
+\setlength{\intextsep}{6pt plus 1pt minus 2pt}
+\setlength{\abovecaptionskip}{3pt}
+
+\newtheorem{remark}{Remark}
+\newtheorem{definition}{Definition}
+\newtheorem{theorem}{Theorem}
+
+\begin{document}
+
+\title{TRAPS: Risk-Aware One-Sided Admission Indexing for High-Cost Point Queries}
+\author{
+  Yadi Wen, Yaxuan Wang, Yujie Xu, Yaling Ren, Dan Yu, Rong Du, Yue Fu, Yongle Chen\\
+  \IEEEauthorblockA{
+Shanxi Key Laboratory of Industrial Internet Security, Taiyuan University of Technology, China\\
+Emails: \{2023005322, 2023005749, 2024002194, 2023006489\}@link.tyut.edu.cn,\\ \{yudan, durong, fuyue, chenyongle\}@tyut.edu.cn
+  }
+}
+\maketitle
+
+\begin{abstract}
+We study admission indexing for high-cost point queries. Password verification is our case study: a frontend should reject definite invalid credential pairs before they invoke Argon2id/PBKDF2, while never dropping represented valid credentials. TRAPS separates routing from correctness. A stable learning and risk oracle assigns attempts to regions, and each region is backed by a keyed approximate-membership substrate or compatible exact keyed fingerprint; the backend remains the only accepting authority. TRAPS uses a capped water-filling allocator for regional residual-forward budgets, records backend-confirmed false positives in an exact replay cache, and preserves one-sidedness through stable features and versioned migration. Seeded production frontiers, shift grids, dynamic fallback, LANL-conditioned replay, exact-tag baselines, scale/update, and bounded-worker queueing show the trade-off: exact fast verifiers give strong uniform collision bounds, while AMQ-backed TRAPS provides risk-aware residual-channel allocation without placing learning on the authentication-correctness path.
+%\keywords{Password authentication, Learned Bloom filter, Credential-flooding defense, Application-layer denial-of-service, Adaptive false-positive control, Capacity-aware pre-screening}
+
+\end{abstract}
+
+\input{context/Introduction}
+\input{context/Building Blocks}
+\input{context/System Framework and Threat Model}
+\input{context/Firewall Construction}
+\input{context/Experiments}
+\input{context/Related Work}
+\input{context/Conclusion}
+
+\clearpage
+
+\section*{AI-Generated Content Acknowledgement}
+The authors used OpenAI ChatGPT/Codex to assist with language editing, source-file inspection, reproducibility-script development, artifact packaging, and code-review suggestions. The authors reviewed and verified the resulting manuscript, experiments, code, figures, and claims, and remain responsible for the paper, artifact, and presentation.
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+\end{document}

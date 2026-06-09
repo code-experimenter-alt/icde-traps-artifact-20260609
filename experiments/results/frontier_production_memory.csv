@@ -1,0 +1,136 @@
+method,bits_per_key,index_or_tag_bits_per_key,cache_bits_per_key,counter_bits_per_key,total_bits_per_key
+Adaptive tag,4.0,4.0,0.0,0.0,4.0
+Global Bloom,4.0,4.0,0.0,0.0,4.0
+GlobalBloom+NegCache,4.0,4.0,4.0,0.0,8.0
+Hash partition,4.0,4.0,0.0,0.0,4.0
+NegCache only,4.0,0.0,4.0,0.0,4.0
+No admission,4.0,0.0,0.0,0.0,0.0
+Oracle AMQ,4.0,4.0,0.0,0.0,4.0
+Peppered tag,4.0,4.0,0.0,0.0,4.0
+Peppered tag-64,4.0,4.0,0.0,0.0,4.0
+RateLimit+Tag,4.0,4.0,0.0,64.0,68.0
+RateLimit+Tag+NegCache,4.0,4.0,4.0,64.0,72.0
+Risk partition,4.0,4.0,0.0,0.0,4.0
+TRAPS learned,4.0,4.0,0.0,0.0,4.0
+TRAPS+ReplayCache,4.0,4.0,4.0,0.0,8.0
+Tag+NegCache,4.0,4.0,4.0,0.0,8.0
+Adaptive tag,6.0,6.0,0.0,0.0,6.0
+Global Bloom,6.0,6.0,0.0,0.0,6.0
+GlobalBloom+NegCache,6.0,6.0,4.0,0.0,10.0
+Hash partition,6.0,6.0,0.0,0.0,6.0
+NegCache only,6.0,0.0,4.0,0.0,4.0
+No admission,6.0,0.0,0.0,0.0,0.0
+Oracle AMQ,6.0,6.0,0.0,0.0,6.0
+Peppered tag,6.0,6.0,0.0,0.0,6.0
+Peppered tag-64,6.0,6.0,0.0,0.0,6.0
+RateLimit+Tag,6.0,6.0,0.0,64.0,70.0
+RateLimit+Tag+NegCache,6.0,6.0,4.0,64.0,74.0
+Risk partition,6.0,6.0,0.0,0.0,6.0
+TRAPS learned,6.0,6.0,0.0,0.0,6.0
+TRAPS+ReplayCache,6.0,6.0,4.0,0.0,10.0
+Tag+NegCache,6.0,6.0,4.0,0.0,10.0
+Adaptive tag,8.0,8.0,0.0,0.0,8.0
+Global Bloom,8.0,8.0,0.0,0.0,8.0
+GlobalBloom+NegCache,8.0,8.0,4.0,0.0,12.0
+Hash partition,8.0,8.0,0.0,0.0,8.0
+NegCache only,8.0,0.0,4.0,0.0,4.0
+No admission,8.0,0.0,0.0,0.0,0.0
+Oracle AMQ,8.0,8.0,0.0,0.0,8.0
+Peppered tag,8.0,8.0,0.0,0.0,8.0
+Peppered tag-64,8.0,8.0,0.0,0.0,8.0
+RateLimit+Tag,8.0,8.0,0.0,64.0,72.0
+RateLimit+Tag+NegCache,8.0,8.0,4.0,64.0,76.0
+Risk partition,8.0,8.0,0.0,0.0,8.0
+TRAPS learned,8.0,8.0,0.0,0.0,8.0
+TRAPS+ReplayCache,8.0,8.0,4.0,0.0,12.0
+Tag+NegCache,8.0,8.0,4.0,0.0,12.0
+Adaptive tag,10.0,10.0,0.0,0.0,10.0
+Global Bloom,10.0,10.0,0.0,0.0,10.0
+GlobalBloom+NegCache,10.0,10.0,4.0,0.0,14.0
+Hash partition,10.0,10.0,0.0,0.0,10.0
+NegCache only,10.0,0.0,4.0,0.0,4.0
+No admission,10.0,0.0,0.0,0.0,0.0
+Oracle AMQ,10.0,10.0,0.0,0.0,10.0
+Peppered tag,10.0,10.0,0.0,0.0,10.0
+Peppered tag-64,10.0,10.0,0.0,0.0,10.0
+RateLimit+Tag,10.0,10.0,0.0,64.0,74.0
+RateLimit+Tag+NegCache,10.0,10.0,4.0,64.0,78.0
+Risk partition,10.0,10.0,0.0,0.0,10.0
+TRAPS learned,10.0,10.0,0.0,0.0,10.0
+TRAPS+ReplayCache,10.0,10.0,4.0,0.0,14.0
+Tag+NegCache,10.0,10.0,4.0,0.0,14.0
+Adaptive tag,12.0,12.0,0.0,0.0,12.0
+Global Bloom,12.0,12.0,0.0,0.0,12.0
+GlobalBloom+NegCache,12.0,12.0,4.0,0.0,16.0
+Hash partition,12.0,12.0,0.0,0.0,12.0
+NegCache only,12.0,0.0,4.0,0.0,4.0
+No admission,12.0,0.0,0.0,0.0,0.0
+Oracle AMQ,12.0,12.0,0.0,0.0,12.0
+Peppered tag,12.0,12.0,0.0,0.0,12.0
+Peppered tag-64,12.0,12.0,0.0,0.0,12.0
+RateLimit+Tag,12.0,12.0,0.0,64.0,76.0
+RateLimit+Tag+NegCache,12.0,12.0,4.0,64.0,80.0
+Risk partition,12.0,12.0,0.0,0.0,12.0
+TRAPS learned,12.0,12.0,0.0,0.0,12.0
+TRAPS+ReplayCache,12.0,12.0,4.0,0.0,16.0
+Tag+NegCache,12.0,12.0,4.0,0.0,16.0
+Adaptive tag,14.0,14.0,0.0,0.0,14.0
+Global Bloom,14.0,14.0,0.0,0.0,14.0
+GlobalBloom+NegCache,14.0,14.0,4.0,0.0,18.0
+Hash partition,14.0,14.0,0.0,0.0,14.0
+NegCache only,14.0,0.0,4.0,0.0,4.0
+No admission,14.0,0.0,0.0,0.0,0.0
+Oracle AMQ,14.0,14.0,0.0,0.0,14.0
+Peppered tag,14.0,14.0,0.0,0.0,14.0
+Peppered tag-64,14.0,14.0,0.0,0.0,14.0
+RateLimit+Tag,14.0,14.0,0.0,64.0,78.0
+RateLimit+Tag+NegCache,14.0,14.0,4.0,64.0,82.0
+Risk partition,14.0,14.0,0.0,0.0,14.0
+TRAPS learned,14.0,14.0,0.0,0.0,14.0
+TRAPS+ReplayCache,14.0,14.0,4.0,0.0,18.0
+Tag+NegCache,14.0,14.0,4.0,0.0,18.0
+Adaptive tag,16.0,16.0,0.0,0.0,16.0
+Global Bloom,16.0,16.0,0.0,0.0,16.0
+GlobalBloom+NegCache,16.0,16.0,4.0,0.0,20.0
+Hash partition,16.0,16.0,0.0,0.0,16.0
+NegCache only,16.0,0.0,4.0,0.0,4.0
+No admission,16.0,0.0,0.0,0.0,0.0
+Oracle AMQ,16.0,16.0,0.0,0.0,16.0
+Peppered tag,16.0,16.0,0.0,0.0,16.0
+Peppered tag-64,16.0,16.0,0.0,0.0,16.0
+RateLimit+Tag,16.0,16.0,0.0,64.0,80.0
+RateLimit+Tag+NegCache,16.0,16.0,4.0,64.0,84.0
+Risk partition,16.0,16.0,0.0,0.0,16.0
+TRAPS learned,16.0,16.0,0.0,0.0,16.0
+TRAPS+ReplayCache,16.0,16.0,4.0,0.0,20.0
+Tag+NegCache,16.0,16.0,4.0,0.0,20.0
+Adaptive tag,20.0,20.0,0.0,0.0,20.0
+Global Bloom,20.0,20.0,0.0,0.0,20.0
+GlobalBloom+NegCache,20.0,20.0,4.0,0.0,24.0
+Hash partition,20.0,20.0,0.0,0.0,20.0
+NegCache only,20.0,0.0,4.0,0.0,4.0
+No admission,20.0,0.0,0.0,0.0,0.0
+Oracle AMQ,20.0,20.0,0.0,0.0,20.0
+Peppered tag,20.0,20.0,0.0,0.0,20.0
+Peppered tag-64,20.0,20.0,0.0,0.0,20.0
+RateLimit+Tag,20.0,20.0,0.0,64.0,84.0
+RateLimit+Tag+NegCache,20.0,20.0,4.0,64.0,88.0
+Risk partition,20.0,20.0,0.0,0.0,20.0
+TRAPS learned,20.0,20.0,0.0,0.0,20.0
+TRAPS+ReplayCache,20.0,20.0,4.0,0.0,24.0
+Tag+NegCache,20.0,20.0,4.0,0.0,24.0
+Adaptive tag,24.0,24.0,0.0,0.0,24.0
+Global Bloom,24.0,24.0,0.0,0.0,24.0
+GlobalBloom+NegCache,24.0,24.0,4.0,0.0,28.0
+Hash partition,24.0,24.0,0.0,0.0,24.0
+NegCache only,24.0,0.0,4.0,0.0,4.0
+No admission,24.0,0.0,0.0,0.0,0.0
+Oracle AMQ,24.0,24.0,0.0,0.0,24.0
+Peppered tag,24.0,24.0,0.0,0.0,24.0
+Peppered tag-64,24.0,24.0,0.0,0.0,24.0
+RateLimit+Tag,24.0,24.0,0.0,64.0,88.0
+RateLimit+Tag+NegCache,24.0,24.0,4.0,64.0,92.0
+Risk partition,24.0,24.0,0.0,0.0,24.0
+TRAPS learned,24.0,24.0,0.0,0.0,24.0
+TRAPS+ReplayCache,24.0,24.0,4.0,0.0,28.0
+Tag+NegCache,24.0,24.0,4.0,0.0,28.0

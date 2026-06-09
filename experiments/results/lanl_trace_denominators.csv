@@ -1,0 +1,2 @@
+events_used,unique_users,unique_sources,top_1pct_user_event_mass,gini_user_events,train_test_JS_divergence,synthetic_valid_events,synthetic_invalid_events,synthetic_unique_invalid_pairs,synthetic_replay_fraction
+750000,8702,4077,0.3996693333333333,0.7531629161112388,0.18007126316143818,49441,700559,72716,0.896202889406888

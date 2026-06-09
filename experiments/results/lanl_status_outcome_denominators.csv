@@ -1,0 +1,2 @@
+events_used,train_events,validation_events,test_events,lanl_success_events,lanl_failure_events,represented_success_test_events,failure_test_events,represented_tokens,unique_failure_tokens,uses_lanl_status_as_outcome,uses_plaintext_passwords
+750000,450000,150000,150000,744833,5167,138390,1080,68267,239,true,false

@@ -1,0 +1,16 @@
+schema,method,invalid_forward_rate,represented_valid_test,invalid_test
+dst_user,Global Bloom,0.00045863850789649736,9349,140297
+dst_user,Risk partition,0.0004037876337933862,9349,140297
+dst_user,TRAPS learned,0.00039837903979754447,9349,140297
+dst_user,Keyed tag,1.52587890625e-05,9349,140297
+dst_user,Adaptive tag,1.3253971549558262e-05,9349,140297
+dst_user_comp,Global Bloom,0.00045863850789649736,7867,140297
+dst_user_comp,Risk partition,0.0003968247026371588,7867,140297
+dst_user_comp,TRAPS learned,0.00042248625618985294,7867,140297
+dst_user_comp,Keyed tag,1.52587890625e-05,7867,140297
+dst_user_comp,Adaptive tag,1.4056012641793127e-05,7867,140297
+full_stable,Global Bloom,0.00045863850789649736,7015,140297
+full_stable,Risk partition,0.00039831936886037416,7015,140297
+full_stable,TRAPS learned,0.00043192107802726394,7015,140297
+full_stable,Keyed tag,1.52587890625e-05,7015,140297
+full_stable,Adaptive tag,1.436990681722903e-05,7015,140297

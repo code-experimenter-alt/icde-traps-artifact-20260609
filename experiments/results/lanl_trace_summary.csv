@@ -1,0 +1,2 @@
+source,sampled_events,train_events,validation_events,test_events,lanl_success_covariate_events,lanl_failure_covariate_events,synthetic_valid_events,synthetic_invalid_events,represented_tokens
+https://lanl.ma.ic.ac.uk/data/cyber1/auth.txt.gz,750000,450000,150000,150000,744833,5167,49441,700559,14780
