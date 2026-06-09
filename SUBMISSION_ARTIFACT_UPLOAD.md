@@ -49,7 +49,7 @@ After upload, enter the artifact URL in the submission metadata.
 Record the final URL here before submission:
 
 ```text
-ARTIFACT_URL=REPLACE_WITH_NEW_URL
+ARTIFACT_URL=https://anonymous.4open.science/r/ICDETRAPS20260609
 ```
 
 ## Final Local Verification
