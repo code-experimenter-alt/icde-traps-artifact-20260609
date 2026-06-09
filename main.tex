@@ -40,7 +40,7 @@ Emails: \{2023005322, 2023005749, 2024002194, 2023006489\}@link.tyut.edu.cn,\\ \
 \maketitle
 
 \begin{abstract}
-We study admission indexing for high-cost point queries. Password verification is our case study: a frontend should reject definite invalid credential pairs before they invoke Argon2id/PBKDF2, while never dropping represented valid credentials. TRAPS separates routing from correctness. A stable learning and risk oracle assigns attempts to regions, and each region is backed by a keyed approximate-membership substrate or compatible exact keyed fingerprint; the backend remains the only accepting authority. TRAPS uses a capped water-filling allocator for regional residual-forward budgets, records backend-confirmed false positives in an exact replay cache, and preserves one-sidedness through stable features and versioned migration. Seeded production frontiers, shift grids, dynamic fallback, LANL-conditioned replay, exact-tag baselines, scale/update, and bounded-worker queueing show the trade-off: exact fast verifiers give strong uniform collision bounds, while AMQ-backed TRAPS provides risk-aware residual-channel allocation without placing learning on the authentication-correctness path.
+We study admission indexing for high-cost point queries. Password verification is our case study: a frontend should reject definite invalid credential pairs before they invoke Argon2id/PBKDF2, while never dropping represented valid credentials. TRAPS separates routing from correctness. A stable learning and risk oracle assigns attempts to regions, and each region is backed by a keyed approximate-membership substrate or compatible keyed tag fingerprint; the backend remains the only accepting authority. TRAPS uses a capped water-filling allocator for regional residual-forward budgets, records backend-confirmed false positives in an exact replay cache, and preserves one-sidedness through stable features and versioned migration. Seeded controlled frontiers, shift grids, dynamic fallback, LANL-conditioned replay, keyed-tag baselines, scale/update, and bounded-worker queueing show the trade-off: keyed tag fingerprints give strong uniform collision bounds, while AMQ-backed TRAPS provides risk-aware residual-channel allocation without placing learning on the authentication-correctness path.
 %\keywords{Password authentication, Learned Bloom filter, Credential-flooding defense, Application-layer denial-of-service, Adaptive false-positive control, Capacity-aware pre-screening}
 
 \end{abstract}
@@ -52,8 +52,6 @@ We study admission indexing for high-cost point queries. Password verification i
 \input{context/Experiments}
 \input{context/Related Work}
 \input{context/Conclusion}
-
-\clearpage
 
 \section*{AI-Generated Content Acknowledgement}
 The authors used OpenAI ChatGPT/Codex to assist with language editing, source-file inspection, reproducibility-script development, artifact packaging, and code-review suggestions. The authors reviewed and verified the resulting manuscript, experiments, code, figures, and claims, and remain responsible for the paper, artifact, and presentation.

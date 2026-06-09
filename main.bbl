@@ -21,15 +21,14 @@
 \providecommand{\BIBdecl}{\relax}
 \BIBdecl
 
-\bibitem{nist_sp800_63b_2017}
+\bibitem{nist_sp800_63b_4_2025}
 \BIBentryALTinterwordspacing
-P.~Grassi, E.~Newton, J.~Fenton, R.~Perlner, A.~Regenscheid, W.~Burr,
-  J.~Richer, N.~Lefkovitz, J.~Danker, Y.-Y. Choong, K.~Greene, and
-  M.~Theofanos, ``Digital identity guidelines: Authentication and lifecycle
-  management,'' National Institute of Standards and Technology, Gaithersburg,
-  MD, Special Publication NIST SP 800-63B, 2017, includes updates as of
-  2020-03-02; legacy version later withdrawn and superseded. [Online].
-  Available: \url{https://csrc.nist.gov/pubs/sp/800/63/b/upd2/final}
+D.~Temoshok, Y.-Y. Choong, A.~Regenscheid, R.~Galluzzo, J.~L. Fenton,
+  J.~Richer, and N.~Lefkovitz, ``{NIST SP 800-63B-4}: Digital identity
+  guidelines -- authentication and authenticator management,'' National
+  Institute of Standards and Technology, Gaithersburg, MD, Special Publication
+  NIST SP 800-63B-4, Aug. 2025. [Online]. Available:
+  \url{https://doi.org/10.6028/NIST.SP.800-63B-4}
 \BIBentrySTDinterwordspacing
 
 \bibitem{broder2004network}
@@ -42,15 +41,6 @@ M.~Mitzenmacher, ``A model for learned {Bloom} filters and optimizing by
   sandwiching,'' in \emph{Advances in Neural Information Processing Systems 31
   ({NeurIPS} 2018)}, 2018, pp. 462--471. [Online]. Available:
   \url{https://papers.nips.cc/paper_files/paper/2018/hash/0f49c89d1e7298bb9930789c8ed59d48-Abstract.html}
-\BIBentrySTDinterwordspacing
-
-\bibitem{nist_sp800_63b_4_2025}
-\BIBentryALTinterwordspacing
-{National Institute of Standards and Technology}, ``{NIST SP 800-63B-4}:
-  Digital identity guidelines -- authentication and authenticator management,''
-  National Institute of Standards and Technology, Gaithersburg, MD, Special
-  Publication NIST SP 800-63B-4, 2025. [Online]. Available:
-  \url{https://doi.org/10.6028/NIST.SP.800-63B-4}
 \BIBentrySTDinterwordspacing
 
 \bibitem{owasp_authentication_cheat_sheet}
@@ -151,8 +141,8 @@ A.~Sato and Y.~Matsui, ``Fast partitioned learned {Bloom} filter,'' in
 \bibitem{Bishop2024AdversaryResilientLBF}
 \BIBentryALTinterwordspacing
 G.~Almashaqbeh, A.~Bishop, and H.~Tirmazi, ``Adversary resilient learned
-  {Bloom} filters,'' arXiv:2409.06556, 2025, journal reference: ASIACRYPT 2025.
-  [Online]. Available: \url{https://arxiv.org/abs/2409.06556}
+  {Bloom} filters,'' arXiv:2409.06556, 2025, {ASIACRYPT} 2025. [Online].
+  Available: \url{https://arxiv.org/abs/2409.06556}
 \BIBentrySTDinterwordspacing
 
 \bibitem{RFC9576PPArch}
